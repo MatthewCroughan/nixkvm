@@ -2,6 +2,54 @@
 
   imports = [ ./pi-gpu.nix ];
 
+  nixpkgs.overlays = [
+    (final: prev: {
+        python39Packages = final.python39.pkgs;
+        python39 = prev.python39.override {
+          packageOverrides = self: super: {
+            vpype = super.buildPythonPackage rec {
+              pname = "vpype";
+              version = "1.10.0";
+              src = super.fetchPypi {
+                inherit pname version;
+                sha256 = "";
+              };
+              doCheck = false;
+#              buildInputs = [ self.websocket-client self.pyserial ];
+            };
+            vsketch = super.buildPythonPackage rec {
+              pname = "vpype";
+              version = "1e9ebc540a3ef873d39e04e728a8e96a3faedb80";
+              src = prev.fetchFromGitHub {
+                owner = "abey79";
+                repo = pname;
+                rev = version;
+                sha256 = "0rs9bxxrw4wscf4a8yl776a8g880m5gcm75q06yx2cn3lw2b7v22";
+              };
+              doCheck = false;
+            };
+          };
+        };
+      raspberrypifw = prev.raspberrypifw.overrideAttrs (_: {
+        src = prev.fetchFromGitHub {
+          owner = "raspberrypi";
+          repo = "firmware";
+          rev = "56e76a43e4df5872f509c2ace299e692de3ea9a6";
+          hash = "";
+        };
+      });
+    })
+  ];
+
+#  boot.loader = {
+#    generic-extlinux-compatible.enable = lib.mkForce false;
+#    raspberryPi = {
+#      enable = true;
+#      version = 4;
+#      uboot.enable = false;
+#    };
+#  };
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelModules = lib.mkForce [ "bridge" "macvlan" "tap" "tun" "loop" "atkbd" "ctr" ];
   boot.supportedFilesystems = lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" "ext4" "vfat" ];
@@ -16,9 +64,13 @@
     vim
     git
     inkscape
+    candle
+    (builtins.getFlake "github:nixos/nixpkgs/891016b5cf1998ea84852adac52c65c5ccd3e802").legacyPackages.${pkgs.hostPlatform.system}.haskellPackages.juicy-gcode
+    python39Packages.vsketch
+    python39Packages.vpype
   ];
 
-  nix = {
+  nix = lib.mkForce {
     package = pkgs.nixUnstable;
     extraOptions = ''
       experimental-features = nix-command flakes
