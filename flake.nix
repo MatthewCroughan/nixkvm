@@ -17,7 +17,7 @@
           {
            environment.systemPackages = with nixpkgs.legacyPackages.aarch64-linux.pkgs; [ vim git ];
            nix = {
-             package = nixpkgs.legacyPackages.aarch64-linux.nixUnstable;
+             package = nixpkgs.legacyPackages.aarch64-linux.nixVersions.latest;
              extraOptions = ''
                experimental-features = nix-command flakes
              '';
