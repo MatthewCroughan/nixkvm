@@ -30,6 +30,7 @@
             services.tailscale.enable = true;
             services.ttyd.enable = true;
             services.ttyd.openFirewall = true;
+            services.ttyd.writeable = true;
             services.openssh.enable = true;
             hardware.enableRedistributableFirmware = true;
             networking = {
