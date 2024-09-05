@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-21.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     matthewcroughan.url = "github:matthewcroughan/nixcfg";
   };
 
@@ -16,6 +16,7 @@
           "${matthewcroughan}/mixins/common.nix"
           {
            environment.systemPackages = with nixpkgs.legacyPackages.aarch64-linux.pkgs; [ vim git ];
+          system.stateVersion = "24.05";
            nix = {
              package = nixpkgs.legacyPackages.aarch64-linux.nixUnstable;
              extraOptions = ''
