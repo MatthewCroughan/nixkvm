@@ -27,10 +27,12 @@
               enable = true;
               algorithm = "zstd";
             };
-            services.tailscale.enable = true;
-            services.ttyd.enable = true;
-            services.ttyd.openFirewall = true;
-            services.openssh.enable = true;
+            services = {
+              tailscale.enable = true;
+            ttyd.enable = true;
+            ttyd.openFirewall = true;
+            openssh.enable = true;
+            };
             hardware.enableRedistributableFirmware = true;
             networking = {
               useDHCP = true;
